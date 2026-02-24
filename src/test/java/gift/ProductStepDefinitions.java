@@ -1,10 +1,10 @@
-package gift.cucumber;
+package gift;
 
 import gift.model.Category;
 import gift.model.Product;
 import gift.model.ProductRepository;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.When;
+import io.cucumber.java.ko.그리고;
+import io.cucumber.java.ko.만일;
 import io.restassured.RestAssured;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -17,17 +17,20 @@ public class ProductStepDefinitions {
     int port;
 
     @Autowired
+    SharedContext context;
+
+    @Autowired
     ProductRepository productRepository;
 
-    @And("{string} 카테고리에 {string} 상품이 존재한다")
+    @그리고("{string} 카테고리에 {string} 상품이 존재한다")
     public void 상품이_존재한다(String categoryName, String productName) {
-        Category category = SharedContext.getCategory(categoryName);
+        Category category = context.getCategory(categoryName);
         productRepository.save(new Product(productName, 4500, "http://example.com/image.png", category));
     }
 
-    @When("{string} 카테고리에 {int}원짜리 {string} 상품을 생성한다")
+    @만일("{string} 카테고리에 {int}원짜리 {string} 상품을 생성한다")
     public void 상품을_생성한다(String categoryName, int price, String productName) {
-        Category category = SharedContext.getCategory(categoryName);
+        Category category = context.getCategory(categoryName);
         var response = RestAssured.given().log().all()
                 .port(port)
                 .contentType("application/json")
@@ -41,10 +44,10 @@ public class ProductStepDefinitions {
                 .post("/api/products")
                 .then().log().all()
                 .extract();
-        SharedContext.setResponse(response);
+        context.setResponse(response);
     }
 
-    @When("존재하지 않는 카테고리로 상품을 생성한다")
+    @만일("존재하지 않는 카테고리로 상품을 생성한다")
     public void 존재하지_않는_카테고리로_상품을_생성한다() {
         var response = RestAssured.given().log().all()
                 .port(port)
@@ -59,10 +62,10 @@ public class ProductStepDefinitions {
                 .post("/api/products")
                 .then().log().all()
                 .extract();
-        SharedContext.setResponse(response);
+        context.setResponse(response);
     }
 
-    @When("상품을 전체 조회한다")
+    @만일("상품을 전체 조회한다")
     public void 상품을_전체_조회한다() {
         var response = RestAssured.given().log().all()
                 .port(port)
@@ -70,6 +73,6 @@ public class ProductStepDefinitions {
                 .get("/api/products")
                 .then().log().all()
                 .extract();
-        SharedContext.setResponse(response);
+        context.setResponse(response);
     }
 }

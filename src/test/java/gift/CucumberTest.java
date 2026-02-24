@@ -1,4 +1,4 @@
-package gift.cucumber;
+package gift;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.platform.suite.api.ConfigurationParameter;
