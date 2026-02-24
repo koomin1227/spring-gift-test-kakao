@@ -28,4 +28,16 @@
 
 - **프롬프트**: 기존의 테스트 코드들 CategoryAcceptanceTest, GiftAcceptanceTest, ProductAcceptanceTest 는 그대로 놔두지만 이 테스트 케이스들과 테스트 코드를 참고해서 각각의 파일로 cucumber 버전 코드를 만들어봐
 - **AI 결과**: (아래 참고)
+- **선택/폐기**: 채택
+
+## 6. PostgreSQL 연결 방법 질문
+
+- **프롬프트**: 이제 h2 말고 postgres 에 연결하도록 하고 싶은데 어떻게 하면 좋을까
+- **AI 결과**: (아래 참고)
+- **선택/폐기**: 채택. Docker로 직접 PostgreSQL 띄우고 application.properties에 연결 설정
+
+## 7. PostgreSQL 연결 설정 적용
+
+- **프롬프트**: 도커로 내가 띄어 둘거니까 그냥 url, db, password 만 주면 연결할 수 있게 application.yml 파일 수정 해줘
+- **AI 결과**: (아래 참고)
 - **선택/폐기**: 미정

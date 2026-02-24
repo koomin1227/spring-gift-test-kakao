@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: gift
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: postgres
+    password: postgres
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+kakao:
+  message:
+    token: ACCESS_TOKEN
+    url: https://kapi.kakao.com/v1/api/talk
+  social:
+    token: ACCESS_TOKEN
+    url: https://kapi.kakao.com/v1/api/talk
