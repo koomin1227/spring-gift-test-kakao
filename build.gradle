@@ -31,6 +31,62 @@ dependencies {
 	testImplementation 'org.junit.platform:junit-platform-suite'
 }
 
+tasks.register('composeUp', Exec) {
+	description 'Start PostgreSQL with docker-compose'
+	commandLine 'docker', 'compose', 'up', '-d'
+}
+
+tasks.register('composeDown', Exec) {
+	description 'Stop PostgreSQL with docker-compose'
+	commandLine 'docker', 'compose', 'down'
+}
+
+tasks.register('waitForPostgres') {
+	description 'Wait for PostgreSQL to be ready'
+	dependsOn composeUp
+	doLast {
+		def maxRetries = 5
+		for (int i = 1; i <= maxRetries; i++) {
+			def proc = ['docker', 'exec', 'gift-test-db', 'pg_isready', '-U', 'postgres'].execute()
+			proc.waitFor()
+			if (proc.exitValue() == 0) {
+				logger.lifecycle("PostgreSQL is ready.")
+				return
+			}
+			if (i < maxRetries) {
+				logger.lifecycle("PostgreSQL not ready, retrying... (${i}/${maxRetries})")
+				Thread.sleep(2000)
+			} else {
+				throw new GradleException("PostgreSQL failed to start after ${maxRetries} retries")
+			}
+		}
+	}
+}
+
+tasks.register('resetDatabase') {
+	description 'Drop and recreate the test database'
+	dependsOn waitForPostgres
+	doLast {
+		def drop = ['docker', 'exec', 'gift-test-db',
+			'dropdb', '-U', 'postgres', '--if-exists', 'testdb'].execute()
+		drop.waitFor()
+		def create = ['docker', 'exec', 'gift-test-db',
+			'createdb', '-U', 'postgres', 'testdb'].execute()
+		create.waitFor()
+		if (create.exitValue() != 0) {
+			throw new GradleException("Failed to reset database: ${create.err.text}")
+		}
+		logger.lifecycle("Database 'testdb' has been reset.")
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+	dependsOn resetDatabase
+	finalizedBy composeDown
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		showStandardStreams = false
+		exceptionFormat = 'full'
+	}
 }
