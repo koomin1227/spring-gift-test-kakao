@@ -21,6 +21,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -32,12 +33,12 @@ dependencies {
 }
 
 tasks.register('composeUp', Exec) {
-	description 'Start PostgreSQL with docker-compose'
-	commandLine 'docker', 'compose', 'up', '-d'
+	description 'Start PostgreSQL and app with docker-compose'
+	commandLine 'docker', 'compose', '--env-file', '.env', 'up', '-d', '--build'
 }
 
 tasks.register('composeDown', Exec) {
-	description 'Stop PostgreSQL with docker-compose'
+	description 'Stop all containers with docker-compose'
 	commandLine 'docker', 'compose', 'down'
 }
 
@@ -63,6 +64,32 @@ tasks.register('waitForPostgres') {
 	}
 }
 
+tasks.register('waitForApp') {
+	description 'Wait for Spring app to be ready'
+	dependsOn waitForPostgres
+	doLast {
+		def maxRetries = 10
+		for (int i = 1; i <= maxRetries; i++) {
+			try {
+				def proc = ['curl', '-sf', 'http://localhost:18080/actuator/health'].execute()
+				proc.waitFor()
+				if (proc.exitValue() == 0) {
+					logger.lifecycle("Spring app is ready.")
+					return
+				}
+			} catch (Exception e) {
+				// ignore
+			}
+			if (i < maxRetries) {
+				logger.lifecycle("Spring app not ready, retrying... (${i}/${maxRetries})")
+				Thread.sleep(3000)
+			} else {
+				throw new GradleException("Spring app failed to start after ${maxRetries} retries")
+			}
+		}
+	}
+}
+
 tasks.register('resetDatabase') {
 	description 'Drop and recreate the test database'
 	dependsOn waitForPostgres
@@ -82,7 +109,7 @@ tasks.register('resetDatabase') {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	dependsOn resetDatabase
+	dependsOn resetDatabase, waitForApp
 	finalizedBy composeDown
 	testLogging {
 		events 'passed', 'skipped', 'failed'

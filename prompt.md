@@ -52,4 +52,10 @@
 
 - **프롬프트**: docker-compose 로 postgreSQL 을 띄울 수 있게 해야됨. gradle task 를 추가해서 gradle 명령어로 docker-compose 실행되게 만들어야됨. pg_isready 로 테스트 실행 전에 헬스 체크 성공하면 테스트 돌아가야하고, 실패하면 5번정도 retry. doFirst / finalizedBy 사용해서 테스트 시작전 db 초기화.
 - **AI 결과**: (아래 참고)
+- **선택/폐기**: 채택
+
+## 10. Dockerfile multi-stage build + docker-compose 통합 + .env 환경변수
+
+- **프롬프트**: 스프링 application 까지 도커로 감싸야해. dockerfile 작성. multi-stage build (1단계 빌드, 2단계 실행). jvm은 eclipse-temurin:21-jre-alpine. 테스트 흐름: postgresql 실행 → healthcheck → 스프링 실행 → 헬스체크 → 테스트 실행. datasource url 등은 .env 파일로 주입.
+- **AI 결과**: (아래 참고)
 - **선택/폐기**: 미정
