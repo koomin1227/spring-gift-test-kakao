@@ -40,4 +40,16 @@
 
 - **프롬프트**: 도커로 내가 띄어 둘거니까 그냥 url, db, password 만 주면 연결할 수 있게 application.yml 파일 수정 해줘
 - **AI 결과**: (아래 참고)
+- **선택/폐기**: 채택
+
+## 8. 프로필 분리 (prod / cucumber)
+
+- **프롬프트**: prod 랑 test 랑 프로필 분리하려고 함. prod 때는 ddl auto 끌거임. test 는 킬거고, 프로필 이름은 prod, cucumber 로 할거고, property 파일도 분리해줘.
+- **AI 결과**: (아래 참고)
+- **선택/폐기**: 채택
+
+## 9. Docker Compose + Gradle 태스크로 테스트 자동화
+
+- **프롬프트**: docker-compose 로 postgreSQL 을 띄울 수 있게 해야됨. gradle task 를 추가해서 gradle 명령어로 docker-compose 실행되게 만들어야됨. pg_isready 로 테스트 실행 전에 헬스 체크 성공하면 테스트 돌아가야하고, 실패하면 5번정도 retry. doFirst / finalizedBy 사용해서 테스트 시작전 db 초기화.
+- **AI 결과**: (아래 참고)
 - **선택/폐기**: 미정
