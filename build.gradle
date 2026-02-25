@@ -32,6 +32,18 @@ dependencies {
 	testImplementation 'org.junit.platform:junit-platform-suite'
 }
 
+// --- test: H2로 JUnit 테스트만 실행 (도커 불필요) ---
+tasks.named('test') {
+	useJUnitPlatform()
+	exclude '**/CucumberTest*'
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		showStandardStreams = false
+		exceptionFormat = 'full'
+	}
+}
+
+// --- cucumberTest: Docker + PostgreSQL로 Cucumber 테스트 실행 ---
 tasks.register('composeUp', Exec) {
 	description 'Start PostgreSQL and app with docker-compose'
 	commandLine 'docker', 'compose', 'up', '-d', '--build'
@@ -107,8 +119,10 @@ tasks.register('resetDatabase') {
 	}
 }
 
-tasks.named('test') {
+tasks.register('cucumberTest', Test) {
+	description 'Run Cucumber tests with Docker PostgreSQL'
 	useJUnitPlatform()
+	include '**/CucumberTest*'
 	dependsOn resetDatabase, waitForApp
 	finalizedBy composeDown
 	testLogging {
