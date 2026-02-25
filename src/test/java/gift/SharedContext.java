@@ -1,54 +1,59 @@
 package gift;
 
-import gift.model.Category;
-import gift.model.Member;
-import gift.model.Option;
-import io.cucumber.spring.ScenarioScope;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
-@ScenarioScope
 public class SharedContext {
 
-    private ExtractableResponse<Response> response;
-    private final Map<String, Category> categories = new HashMap<>();
-    private final Map<String, Member> members = new HashMap<>();
-    private final Map<String, Option> options = new HashMap<>();
+    static final String BASE_URL = "http://localhost:18080";
+    static final String DB_URL = "jdbc:postgresql://localhost:5432/testdb";
+    static final String DB_USER = "postgres";
+    static final String DB_PASSWORD = "postgres";
 
-    public ExtractableResponse<Response> getResponse() {
+    private static ExtractableResponse<Response> response;
+    private static final Map<String, Long> categoryIds = new HashMap<>();
+    private static final Map<String, Long> memberIds = new HashMap<>();
+    private static final Map<String, Long> optionIds = new HashMap<>();
+
+    public static void clear() {
+        response = null;
+        categoryIds.clear();
+        memberIds.clear();
+        optionIds.clear();
+    }
+
+    public static ExtractableResponse<Response> getResponse() {
         return response;
     }
 
-    public void setResponse(ExtractableResponse<Response> response) {
-        this.response = response;
+    public static void setResponse(ExtractableResponse<Response> resp) {
+        response = resp;
     }
 
-    public void putCategory(String name, Category category) {
-        categories.put(name, category);
+    public static void putCategoryId(String name, Long id) {
+        categoryIds.put(name, id);
     }
 
-    public Category getCategory(String name) {
-        return categories.get(name);
+    public static Long getCategoryId(String name) {
+        return categoryIds.get(name);
     }
 
-    public void putMember(String name, Member member) {
-        members.put(name, member);
+    public static void putMemberId(String name, Long id) {
+        memberIds.put(name, id);
     }
 
-    public Member getMember(String name) {
-        return members.get(name);
+    public static Long getMemberId(String name) {
+        return memberIds.get(name);
     }
 
-    public void putOption(String name, Option option) {
-        options.put(name, option);
+    public static void putOptionId(String name, Long id) {
+        optionIds.put(name, id);
     }
 
-    public Option getOption(String name) {
-        return options.get(name);
+    public static Long getOptionId(String name) {
+        return optionIds.get(name);
     }
 }
