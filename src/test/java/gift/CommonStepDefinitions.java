@@ -41,9 +41,14 @@ public class CommonStepDefinitions {
         memberRepository.deleteAll();
     }
 
-    @그러면("응답 상태코드는 {int}이다")
-    public void 응답_상태코드_확인(int statusCode) {
-        assertThat(context.getResponse().statusCode()).isEqualTo(statusCode);
+    @그러면("성공한다")
+    public void 성공한다() {
+        assertThat(context.getResponse().statusCode()).isBetween(200, 299);
+    }
+
+    @그러면("실패한다")
+    public void 실패한다() {
+        assertThat(context.getResponse().statusCode()).isGreaterThanOrEqualTo(400);
     }
 
     @그리고("응답의 {string}은 {string}이다")

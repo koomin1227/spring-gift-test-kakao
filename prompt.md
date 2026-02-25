@@ -58,4 +58,10 @@
 
 - **프롬프트**: 스프링 application 까지 도커로 감싸야해. dockerfile 작성. multi-stage build (1단계 빌드, 2단계 실행). jvm은 eclipse-temurin:21-jre-alpine. 테스트 흐름: postgresql 실행 → healthcheck → 스프링 실행 → 헬스체크 → 테스트 실행. datasource url 등은 .env 파일로 주입.
 - **AI 결과**: (아래 참고)
+- **선택/폐기**: 채택
+
+## 11. Cucumber 시나리오 문구를 자연어로 변경
+
+- **프롬프트**: cucumber 시나리오에서 then 에서 상태코드로 써있는데, 상태 코드는 개발에 따라 바뀔 수 있으니까 gherkin 문법 상에는 성공한다. 실패한다. 선물한다. 이런식으로 문구를 바꾸면 어떨까?
+- **AI 결과**: (아래 참고)
 - **선택/폐기**: 미정
