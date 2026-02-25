@@ -34,7 +34,7 @@ dependencies {
 
 tasks.register('composeUp', Exec) {
 	description 'Start PostgreSQL and app with docker-compose'
-	commandLine 'docker', 'compose', '--env-file', '.env', 'up', '-d', '--build'
+	commandLine 'docker', 'compose', 'up', '-d', '--build'
 }
 
 tasks.register('composeDown', Exec) {
